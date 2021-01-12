@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather app</title>
+    <link rel="shortcut icon" href="/weather-app/weatherforec.jpg" type="image/x-icon">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Roboto:wght@100;300;400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+     * {
+         padding: 0;
+         margin: 0;
+         box-sizing: border-box;
+     }   
+     body {
+         height: 100%;
+         margin: 0;
+         background: url(/img/beach-sunset-thailand.jpg);
+         background-repeat: no-repeat;
+         background-size: cover;
+         background-position: center;
+         background-attachment: fixed;
+         font-family: 'Roboto', sans-serif;
+         -webkit-font-smoothing: antialiased;
+         -moz-osx-font-smoothing: grayscale;
+     }
+     header {
+         position: relative;
+         font-family: 'Dancing Script', sans-serif;
+         font-weight: 700;
+         font-size: 1.7em;
+         display: flex;
+         flex-direction: column;
+         justify-content: space-between;
+         align-items: center;
+         width: 100%;
+         margin: 10px auto;
+         color: #DDD9DB;
+     }
+     .status {
+       position: absolute;
+       z-index: 5;
+       padding: 30px;
+       background: rgba(221,217,219, 0.2);
+       top: 50px;
+       font-family: 'Roboto', sans-serif;
+       display: none;
+     }
+     .container {
+        position: relative;
+        margin: auto;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        width: 300px;
+        height: 100px;
+      }
+      .search {
+        position: absolute;
+        margin: auto;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        width: 60px;
+        height: 60px;
+        background: #23120b;
+        border-radius: 50%;
+        transition: all 1s;
+        z-index: 4;
+        box-shadow: 0 0 25px 0 rgba(0, 0, 0, 0.4);
+      }
+      .search:hover {
+        cursor: pointer;
+      }
+      .search::before {
+        content: "";
+        position: absolute;
+        margin: auto;
+        top: 22px;
+        right: 0;
+        bottom: 0;
+        left: 22px;
+        width: 12px;
+        height: 2px;
+        background: white;
+        transform: rotate(45deg);
+        transition: all 0.5s;
+      }
+      .search::after {
+        content: "";
+        position: absolute;
+        margin: auto;
+        top: -5px;
+        right: 0;
+        bottom: 0;
+        left: -5px;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        border: 2px solid white;
+        transition: all 0.5s;
+      }
+
+      input {
+        font-family: "Inconsolata", monospace;
+        position: absolute;
+        margin: auto;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        width: 50px;
+        height: 50px;
+        outline: none;
+        border: none;
+
+        background: #23120b;
+        color: white;
+        text-shadow: 0 0 10px #23120b;
+        padding: 0 80px 0 20px;
+        border-radius: 30px;
+        box-shadow: 0 0 25px 0 #23120b, 0 20px 25px 0 rgba(0, 0, 0, 0.2);
+
+        transition: all 1s;
+        opacity: 0;
+        z-index: 5;
+        font-weight: bolder;
+        letter-spacing: 0.1em;
+      }
+      input:hover {
+        cursor: pointer;
+      }
+      input:focus {
+        width: 300px;
+        opacity: 1;
+        cursor: text;
+      }
+      input:focus ~ .search {
+        right: -250px;
+        background: #363044;
+        z-index: 6;
+      }
+      input::before ~ .search {
+        top: 0;
+        left: 0;
+        width: 25px;
+      }
+      input::after ~ .search {
+        top: 0;
+        left: 0;
+        width: 25px;
+        height: 2px;
+        border: none;
+        background: white;
+        border-radius: 0%;
+        transform: rotate(-45deg);
+      }
+
+      input::placeholder {
+        color: white;
+        opacity: 0.5;
+        font-weight: bolder;
+      }
+
+      .display {
+          
+          width: 85vw;
+          margin: 20px auto;
+          background:  rgba(221,217,219, 0.2);
+          padding: 40px 150px 40px 150px;
+          display: flex;
+          flex-direction: column;
+      }
+
+      .country h2{
+          color: rgba(255,255,255,0.9);
+      }
+
+      .country-img img {
+          position: relative;
+          top: 10px;
+          height: 40px;
+          width: 40px;
+          border-radius: 50px;
+          margin-right: 30px;
+      }
+
+      .country-name {
+          display: inline;
+      }
+
+      .main {
+        width: 100%;
+        height: 100%;
+        margin: 45px 0px 0px 5%;
+      }
+
+      .top-display {
+        width: 100%;
+      }
+
+      .condition {
+        width: 50%;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+      }
+
+      .top-title {
+        color:  rgba(255,255,255,0.9);
+        font-weight: 500;
+        margin-bottom: 20px;
+      }
+
+      .condition-day {
+        font-weight: 500;
+        font-size: 1em;
+        color:  #363044;
+        text-decoration: underline;
+        margin-bottom: 9px;
+      }
+
+      .morning-icon, .day-icon, .eve-icon {
+        padding: 0px;
+        margin: 0px;
+        display: inline;
+        height: 60px;
+        width: 60px;
+      }
+
+      .condition-degree {
+        width: 57%;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+      }
+
+      .condition-degree span:first-of-type {
+        height: 40px;
+        width: 40px;
+      }
+
+      .degress {
+        display: inline;
+        color: rgba(255,255,255,1.0);
+        font-weight: 400;
+        font-size: 1.7em;
+        position: relative;
+        bottom: 14px;
+        left: 15px;
+      }
+
+      .span::after {
+        content: url(/img/circle.svg);
+        position: relative;
+        bottom: 16px;
+      }
+
+      .bottom-display {
+        width: 100%;
+        margin-top: 50px;
+        display: flex;
+        flex-direction: row;
+      }
+
+      .bold-degree {
+        font-weight: 900;
+        /* font-size: 13em; */
+        font-size: calc(40px + (180 - 40) * ((100vw - 300px) / (1600 - 300)));
+        color:  rgba(255,255,255,1.0);
+      }
+
+      .bold-degree .span::after {
+        content: url(/img/circlebig.svg);
+        position: relative;
+        /* bottom: 130px; */
+        top: -56%;
+      }
+
+      .bold-degree span:last-of-type {
+        margin-left: -50px;
+        padding: 0;
+      }
+
+      .bold-details {
+        position: relative;
+        top: 38px;
+        left: 40px;
+      }
+      .bold-details .day {
+        font-weight: 700;
+        /* font-size: 1.6em; */
+        font-size: calc(10px + (26 - 10) * ((100vw - 300px) / (1600 - 300)));
+        color: rgba(255,255,255,1.0);
+      }
+      .calender-mode {
+        line-height: 2.9em;
+        word-spacing: 8px;
+        color: #363044;
+        font-size: 1.2em;
+        font-weight: 500;
+      }
+      .insight {
+        font-weight: 900;
+        /* font-size: 2.2em; */
+        font-size: calc(20px + (35 - 20) * ((100vw - 300px) / (1600 - 300)));
+        color: rgba(255,255,255,1.0);
+        margin-top: 14px;
+      }
+
+      @media only screen and (max-width: 920px) {
+        .display {
+          padding: 40px 30px 40px 30px;
+        }
+
+        .insight {
+          margin-top: 10px;
+        }
+
+        .calender-mode {
+          line-height: 1.3em;
+        }
+
+        .bold-degree .span::after {
+        content: url(/img/circlesmall.svg);
+        position: relative;
+        top: -50%;
+      }
+
+      .condition-degree {
+        width: 80%;
+      }
+
+      .condition {
+        width: 80%;
+      }        
+      }
+
+      @media only screen and (max-width: 425px) {
+        .degress {
+          top: 10px;
+        }
+
+        .bold-degree span:last-of-type {
+        margin-left: -26px;
+        padding: 0;
+      }
+
+      .bold-degree .span::after {
+        content: url(/img/circlesmall.svg);
+        position: relative;
+        top: -40%;
+        left: -4px;
+      }
+      }
+
+      @media only screen and (max-width: 1024px) {
+        .condition-degree {
+        width: 95%;
+      }
+      .condition {
+        width: 90%;
+      }
+      }
+
+      @media only screen and (min-width: 768px) {
+        .bold-degree span:last-of-type {
+        margin-left: -30px;
+        padding: 0;
+      }
+      }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Weather App</h1>
+        <h1 class="status">Unable to retrieve your location</h1>
+        <div class="serch-bar">
+            <div class="container">
+              <input type="search" placeholder="Search..." value="" />
+              <div class="search"></div>
+            </div>
+          </div>
+    </header>
+
+    <div class="display">
+      <div class="country">
+          <span class="country-img"> <img class="country-flag" src="/img/flag-square-250.png" alt="Country name"></span>
+          <h2 class="country-name">Enable your location</h2>
+      </div>
+      <div class="main">
+        <div class="top-display">
+          <h1 class="top-title">Today</h1>
+          <div class="condition">
+            <h3 class="condition-day">Morning</h3>
+            <h3 class="condition-day">Day</h3>
+            <h3 class="condition-day">Evening</h3>
+          </div>
+          <div class="condition-degree">
+            <div class="condition-degree--child">
+              <span> <img class="morning-icon" src="/img/sun (1).svg" alt="sun"> </span> 
+              <div class="degress">
+                <span class="span morning">0</span>
+                <span class="span morning-high">0</span>
+              </div>
+            </div>
+            <div class="condition-degree--child">
+              <span> <img class="day-icon" src="/img/sun (1).svg" alt="sun"> </span> 
+              <div class="degress">
+                <span class="span day-temp">0</span>
+                <span class="span day-temp--high">0</span>
+              </div>
+            </div>
+            <div class="condition-degree--child">
+              <span> <img class="eve-icon" src="/img/sun (1).svg" alt="sun"> </span> 
+              <div class="degress">
+                <span class="span evening-temp">0</span>
+                <span class="span evening-temp--high">0</span>
+              </div>
+            </div>
+          </div>
+        
+        </div>
+        <div class="bottom-display">
+          <div class="bold-degree">
+              <span class="span current-temp">0</span>
+              <span>C</span>
+          </div>
+          <div class="bold-details">
+            <h4 class="day">Unknown</h4>
+            <h4 class="calender-mode">Unknown</h4>
+            <h3 class="insight">Unknown</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"
+    integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg=="
+    crossorigin="anonymous"
+  ></script>
+    <script src="/data.js"></script>
+</body>
+</html>
