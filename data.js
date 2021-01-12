@@ -66,7 +66,7 @@ function displayWeather(result, city, country, countryCode) {
   // for morning
   $(".morning").text(Math.floor(result.daily[0].feels_like.morn));
   $(".morning-high").text(Math.floor(result.daily[0].temp.morn));
-  let mornIcon = `http://openweathermap.org/img/wn/${icon}d@2x.png`;
+  let mornIcon = `https://openweathermap.org/img/wn/${icon}d@2x.png`;
   $(".morning-icon").attr("src", mornIcon);
 
   // for day
@@ -77,7 +77,7 @@ function displayWeather(result, city, country, countryCode) {
   // for evening
   $(".evening-temp").text(Math.floor(result.daily[0].feels_like.eve));
   $(".evening-temp--high").text(Math.floor(result.daily[0].temp.eve));
-  let eveIcon = `http://openweathermap.org/img/wn/${icon}n@2x.png`;
+  let eveIcon = `https://openweathermap.org/img/wn/${icon}n@2x.png`;
   $(".eve-icon").attr("src", eveIcon);
 }
 
@@ -142,7 +142,7 @@ $("body").ready(function () {
 $('input[type="search"]').on("change", function () {
   let searchName = $(this).val();
 
-  const endpoint = `http://api.openweathermap.org/data/2.5/weather?q=${searchName}&units=metric&appid=b1e131fe0cc7b8aa674d0cd040adccc7`;
+  const endpoint = `https://api.openweathermap.org/data/2.5/weather?q=${searchName}&units=metric&appid=b1e131fe0cc7b8aa674d0cd040adccc7`;
 
   if (searchName.trim().length >= 1) {
     $.ajax({
